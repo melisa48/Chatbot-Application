@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service Chatbot</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #chat-container {
+            width: 600px; /* Increased width */
+            height: 500px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            padding: 10px;
+            background-color: #fff;
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+        #user-input {
+            width: 550px; /* Adjusted to match new chat container width */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #chat-wrapper {
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <h1>Customer Service Bot</h1>
+        <div id="chat-container"></div>
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const userId = Date.now();  // Simple user ID based on timestamp
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const chatContainer = document.getElementById('chat-container');
+            const message = userInput.value.trim();
+
+            if (message) {
+                chatContainer.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+                userInput.value = '';
+
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message, user_id: userId }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    chatContainer.innerHTML += `<p><strong>Bot:</strong> ${data.response}</p>`;
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+
+
